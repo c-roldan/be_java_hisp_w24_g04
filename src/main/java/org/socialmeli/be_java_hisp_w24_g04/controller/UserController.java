@@ -4,6 +4,7 @@ import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowedDTO;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowerCountDTO;
 import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
+import org.socialmeli.be_java_hisp_w24_g04.dto.SingleResponseDTO;
 import org.socialmeli.be_java_hisp_w24_g04.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,11 @@ public class UserController {
     @Autowired
     public UserController(IUserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/{userId}/followers/list")
+public ResponseEntity<SingleResponseDTO> getFollowers(@PathVariable Integer userId) {
+        return ResponseEntity.ok(new SingleResponseDTO(200, userService.getFollowers(userId)));
     }
 
     @GetMapping("/{userId}/followed/list")
