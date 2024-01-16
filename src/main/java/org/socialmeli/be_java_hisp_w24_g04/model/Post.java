@@ -17,14 +17,11 @@ import java.time.LocalDate;
 public class Post {
     @JsonProperty("post_id")
     private Integer postId;
-
     @JsonProperty("user_id")
     private Integer userId;
-
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate date;
-
     private Product product;
     private Integer category;
     private Double price;
