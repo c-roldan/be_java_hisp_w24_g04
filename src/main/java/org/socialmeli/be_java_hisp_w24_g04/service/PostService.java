@@ -96,7 +96,7 @@ public class PostService implements IPostService {
             });
             return foundPosts;
         } catch (Exception e) {
-            throw new NotFoundException("El usuario no existe");
+            throw new NotFoundException("User not found");
         }
     }
 }
