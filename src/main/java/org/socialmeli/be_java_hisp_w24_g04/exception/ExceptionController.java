@@ -30,4 +30,9 @@ public class ExceptionController {
     public ResponseEntity<ErrorResponseDTO> handleNotFoundException(NotFoundException e) {
         return globalErrorResponse(404, e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(InvalidTimeException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidTimeException(InvalidTimeException e) {
+        return globalErrorResponse(400, e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
