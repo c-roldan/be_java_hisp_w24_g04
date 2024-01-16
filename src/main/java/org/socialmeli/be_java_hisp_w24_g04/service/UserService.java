@@ -1,5 +1,6 @@
 package org.socialmeli.be_java_hisp_w24_g04.service;
 
+import org.socialmeli.be_java_hisp_w24_g04.dto.UserDTO;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IUserRepository;
 import org.socialmeli.be_java_hisp_w24_g04.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

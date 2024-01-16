@@ -1,8 +1,13 @@
 package org.socialmeli.be_java_hisp_w24_g04.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.socialmeli.be_java_hisp_w24_g04.model.Post;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,12 +16,23 @@ import java.util.Optional;
 public class PostRepository implements IPostRepository{
     private List<Post> postRepository;
 
-    public void setProductRepository() {
-        this.postRepository = loadProducts();
+    public PostRepository(List<Post> postRepository) {
+        this.postRepository = loadPosts();
     }
 
-    private ArrayList<Post> loadProducts() {
-        return new ArrayList<>();
+    private ArrayList<Post> loadPosts() {
+        ArrayList<Post> data = null;
+        File file;
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        TypeReference<ArrayList<Post>> typeRef = new TypeReference<>() {};
+        try {
+            file = ResourceUtils.getFile("classpath:data/post.json");
+            data = objectMapper.readValue(file, typeRef);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
     }
 
     @Override
