@@ -56,4 +56,9 @@ public class UserService implements IUserService {
     public void follow(Integer userId, Integer userIdToFollow) {
         userRepository.follow(userId, userIdToFollow);
     }
+
+    @Override
+    public void unfollow(Integer userId, Integer userIdToUnfollow) {
+        userRepository.unfollow(userId, userIdToUnfollow);
+    }
 }
