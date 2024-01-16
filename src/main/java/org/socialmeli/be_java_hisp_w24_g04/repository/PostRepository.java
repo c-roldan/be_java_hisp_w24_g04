@@ -2,6 +2,7 @@ package org.socialmeli.be_java_hisp_w24_g04.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.socialmeli.be_java_hisp_w24_g04.model.Post;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @Repository
 public class PostRepository implements IPostRepository{
     private List<Post> postRepository;
+    private String jsonFile = "classpath:data/posts.json";
 
     public PostRepository(List<Post> postRepository) {
         this.postRepository = loadPosts();
@@ -24,10 +26,10 @@ public class PostRepository implements IPostRepository{
         ArrayList<Post> data = null;
         File file;
         ObjectMapper objectMapper = new ObjectMapper();
-
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
         TypeReference<ArrayList<Post>> typeRef = new TypeReference<>() {};
         try {
-            file = ResourceUtils.getFile("classpath:data/post.json");
+            file = ResourceUtils.getFile(this.jsonFile);
             data = objectMapper.readValue(file, typeRef);
         } catch (IOException e) {
             e.printStackTrace();
@@ -39,6 +41,9 @@ public class PostRepository implements IPostRepository{
     public Post save(Post entity) {
         if (entity == null)
             return null;
+
+        if (postRepository == null)
+            postRepository = new ArrayList<>();
 
         postRepository.add(entity);
 
@@ -78,12 +83,7 @@ public class PostRepository implements IPostRepository{
     public Post update(Post entity) {
         postRepository = postRepository
                 .stream()
-                .map(post -> {
-                    if (post.getPostId().equals(entity.getPostId()))
-                        return entity;
-                    else
-                        return post;
-                }).toList();
+                .map(post -> post.getPostId().equals(entity.getPostId()) ? entity : post).toList();
 
         return entity;
     }

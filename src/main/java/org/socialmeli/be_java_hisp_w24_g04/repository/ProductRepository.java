@@ -2,8 +2,8 @@ package org.socialmeli.be_java_hisp_w24_g04.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.socialmeli.be_java_hisp_w24_g04.model.Product;
-import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
 
@@ -16,8 +16,9 @@ import java.util.Optional;
 @Repository
 public class ProductRepository implements IProductRepository {
     private List<Product> productRepository;
+    private String jsonFile = "classpath:data/products.json";
 
-    public ProductRepository(List<Product> productRepository) {
+    public ProductRepository() {
         this.productRepository = loadProducts();
     }
 
@@ -25,10 +26,10 @@ public class ProductRepository implements IProductRepository {
         ArrayList<Product> data = null;
         File file;
         ObjectMapper objectMapper = new ObjectMapper();
-
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
         TypeReference<ArrayList<Product>> typeRef = new TypeReference<>() {};
         try {
-            file = ResourceUtils.getFile("classpath:data/product.json");
+            file = ResourceUtils.getFile(this.jsonFile);
             data = objectMapper.readValue(file, typeRef);
         } catch (IOException e) {
             e.printStackTrace();
@@ -79,12 +80,7 @@ public class ProductRepository implements IProductRepository {
     public Product update(Product entity) {
         productRepository = productRepository
                 .stream()
-                .map(product -> {
-                    if (product.getProductId().equals(entity.getProductId()))
-                        return entity;
-                    else
-                        return product;
-                }).toList();
+                .map(product -> product.getProductId().equals(entity.getProductId()) ? entity : product).toList();
 
         return entity;
     }

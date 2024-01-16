@@ -16,7 +16,7 @@
                 "date": "2024-01-10",
                 "product": {
                     "product_id": 1,
-                    "name": "Product1",
+                    "product_name": "Product1",
                     "type": "Type1",
                     "brand": "Brand1",
                     "color": "Color1",
@@ -31,7 +31,7 @@
                 "date": "2024-01-11",
                 "product": {
                     "product_id": 2,
-                    "name": "Product2",
+                    "product_name": "Product2",
                     "type": "Type2",
                     "brand": "Brand2",
                     "color": "Color2",
@@ -64,7 +64,7 @@
                 "date": "2024-01-12",
                 "product": {
                     "product_id": 3,
-                    "name": "Product3",
+                    "product_name": "Product3",
                     "type": "Type3",
                     "brand": "Brand3",
                     "color": "Color3",
@@ -97,7 +97,7 @@
                 "date": "2024-01-13",
                 "product": {
                     "product_id": 4,
-                    "name": "Product4",
+                    "product_name": "Product4",
                     "type": "Type4",
                     "brand": "Brand4",
                     "color": "Color4",
@@ -112,7 +112,7 @@
                 "date": "2024-01-14",
                 "product": {
                     "product_id": 5,
-                    "name": "Product5",
+                    "product_name": "Product5",
                     "type": "Type5",
                     "brand": "Brand5",
                     "color": "Color5",
@@ -140,7 +140,7 @@
                 "date": "2024-01-15",
                 "product": {
                     "product_id": 6,
-                    "name": "Product6",
+                    "product_name": "Product6",
                     "type": "Type6",
                     "brand": "Brand6",
                     "color": "Color6",
