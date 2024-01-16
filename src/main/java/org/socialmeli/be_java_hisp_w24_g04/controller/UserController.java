@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private IUserService userService;
 
@@ -21,12 +23,12 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users/{userId}/followed/list")
+    @GetMapping("/{userId}/followed/list")
     public ResponseEntity<UserFollowedDTO> userFollowedList(@PathVariable int userId) {
         return ResponseEntity.ok(userService.getUserFollowedDTO(userService.findById(userId)));
     }
 
-    @GetMapping("/users/{userId}/followers/count")
+    @GetMapping("/{userId}/followers/count")
     public ResponseEntity<UserFollowerCountDTO> getFollowersCount(@PathVariable Integer userId) {
         User user = userService.findById(userId);
         return ResponseEntity.ok(new UserFollowerCountDTO(user.getUserId(), user.getUsername(), user.getFollowers().size()));
