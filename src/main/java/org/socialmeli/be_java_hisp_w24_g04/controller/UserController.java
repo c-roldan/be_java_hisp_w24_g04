@@ -8,11 +8,9 @@ import org.socialmeli.be_java_hisp_w24_g04.dto.SingleResponseDTO;
 import org.socialmeli.be_java_hisp_w24_g04.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/users")
@@ -25,13 +23,14 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followers/list")
-public ResponseEntity<SingleResponseDTO> getFollowers(@PathVariable Integer userId) {
+    public ResponseEntity<SingleResponseDTO> getFollowers(@PathVariable Integer userId) {
         return ResponseEntity.ok(new SingleResponseDTO(200, userService.getFollowers(userId)));
     }
 
     @GetMapping("/{userId}/followed/list")
-    public ResponseEntity<UserFollowedDTO> userFollowedList(@PathVariable int userId) {
-        return ResponseEntity.ok(userService.getUserFollowedDTO(userService.findById(userId)));
+    public ResponseEntity<UserFollowedDTO> userFollowedList(@PathVariable int userId, @RequestParam(required = false) String order) {
+        UserFollowedDTO user = userService.getUserFollowedDTO(userService.findById(userId));
+        return ResponseEntity.ok((order == null) ? user : user.orderBy(order));
     }
 
     @GetMapping("/{userId}/followers/count")
