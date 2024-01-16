@@ -1,6 +1,7 @@
 package org.socialmeli.be_java_hisp_w24_g04.service;
 
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserPostDTO;
+import org.socialmeli.be_java_hisp_w24_g04.exception.InvalidTimeException;
 import org.socialmeli.be_java_hisp_w24_g04.model.Post;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IPostRepository;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IProductRepository;
@@ -46,8 +47,15 @@ public class PostService implements IPostService {
         if (posts != null)
             postId = posts.size() + 1;
 
-        final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        final LocalDate dt = LocalDate.parse(userPost.date(), dateFormat);
+        LocalDate dt;
+        DateTimeFormatter dateFormat;
+
+        try {
+            dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            dt = LocalDate.parse(userPost.date(), dateFormat);
+        } catch (Exception e) {
+            throw new InvalidTimeException("Invalid date format. It should be dd-MM-yyyy");
+        }
 
         productRepository.save(userPost.product());
         postRepository.save(new Post(
@@ -60,10 +68,5 @@ public class PostService implements IPostService {
         ));
 
         return userPost;
-    }
-
-    private void getAllPostAndProducts() {
-        System.out.printf("Posts: %s\n", postRepository.findAll().toString());
-        System.out.printf("Products: %s\n", productRepository.findAll().toString());
     }
 }
