@@ -6,6 +6,6 @@ import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import java.util.Optional;
 
 public interface IUserService {
-    public Optional<User> findById(int id);
+    public User findById(int id);
     public UserFollowedDTO getUserFollowedDTO(User user);
 }
