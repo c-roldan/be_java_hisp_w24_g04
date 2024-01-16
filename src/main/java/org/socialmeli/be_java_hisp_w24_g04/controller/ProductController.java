@@ -1,5 +1,6 @@
 package org.socialmeli.be_java_hisp_w24_g04.controller;
 
+import org.socialmeli.be_java_hisp_w24_g04.dto.SingleResponseDTO;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserPostDTO;
 import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.service.IPostService;
@@ -21,13 +22,13 @@ public class ProductController {
     }
 
     @PostMapping("/post")
-    public ResponseEntity<UserPostDTO> createUserPost(@RequestBody UserPostDTO userPost) {
+    public ResponseEntity<SingleResponseDTO> createUserPost(@RequestBody UserPostDTO userPost) {
         var response = postService.createUserPost(userPost);
 
         if (response == null)
             throw new BadRequestException("Couldn't create user's post. Please, try again with a valid" +
                     " user ID.");
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new SingleResponseDTO(200, response));
     }
 }
