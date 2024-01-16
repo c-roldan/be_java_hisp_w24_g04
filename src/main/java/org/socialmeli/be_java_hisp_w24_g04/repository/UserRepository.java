@@ -2,6 +2,9 @@ package org.socialmeli.be_java_hisp_w24_g04.repository;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import org.socialmeli.be_java_hisp_w24_g04.dto.UserDTO;
+import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
@@ -14,20 +17,19 @@ import java.util.Optional;
 
 @Repository
 public class UserRepository implements IUserRepository{
-    private List<User> users;
+    private List<User> userRepository;
+    private String jsonFile = "classpath:data/users.json";
 
-    public UserRepository() {
-        this.users = loadProducts();
-    }
+    public UserRepository() { this.userRepository = loadProducts();}
 
     private ArrayList<User> loadProducts() {
         ArrayList<User> data = null;
         File file;
         ObjectMapper objectMapper = new ObjectMapper();
-
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
         TypeReference<ArrayList<User>> typeRef = new TypeReference<>() {};
         try {
-            file = ResourceUtils.getFile("classpath:data/users.json");
+            file = ResourceUtils.getFile(this.jsonFile);
             data = objectMapper.readValue(file, typeRef);
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,14 +42,14 @@ public class UserRepository implements IUserRepository{
         if (entity == null)
             return null;
 
-        users.add(entity);
+        userRepository.add(entity);
 
         return entity;
     }
 
     @Override
     public User remove(Integer id) {
-        var productToDelete = users
+        var productToDelete = userRepository
                 .stream()
                 .filter(user -> user.getUserId().equals(id))
                 .findFirst()
@@ -56,14 +58,14 @@ public class UserRepository implements IUserRepository{
         if (productToDelete == null)
             return null;
 
-        users.remove(productToDelete);
+        userRepository.remove(productToDelete);
 
         return productToDelete;
     }
 
     @Override
     public Optional<User> get(Integer id) {
-        return users
+        return userRepository
                 .stream()
                 .filter(user -> user.getUserId().equals(id))
                 .findFirst();
@@ -71,20 +73,39 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public List<User> findAll() {
-        return users;
+        return userRepository;
     }
 
     @Override
     public User update(User entity) {
-        users = users
+        userRepository = userRepository
                 .stream()
-                .map(user -> {
-                    if (user.getUserId().equals(entity.getUserId()))
-                        return entity;
-                    else
-                        return user;
-                }).toList();
+                .map(user -> user.getUserId().equals(entity.getUserId()) ? entity : user).toList();
 
         return entity;
+    }
+
+    @Override
+    public void follow(Integer userId, Integer userIdToFollow) {
+        var user = userRepository
+                .stream()
+                .filter(u -> u.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
+
+        var userToFollow = userRepository
+                .stream()
+                .filter(u -> u.getUserId().equals(userIdToFollow))
+                .findFirst()
+                .orElse(null);
+
+        if (user == null)
+            throw new NotFoundException("User with id " + userId + " not found");
+
+        if (userToFollow == null)
+            throw new NotFoundException("User with id " + userIdToFollow + " not found");
+
+        user.getFollowed().add(new UserDTO(userToFollow.getUserId(), userToFollow.getUsername()));
+        userToFollow.getFollowers().add(new UserDTO(user.getUserId(), user.getUsername()));
     }
 }
