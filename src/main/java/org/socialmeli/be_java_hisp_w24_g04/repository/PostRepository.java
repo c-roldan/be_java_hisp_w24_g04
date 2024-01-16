@@ -43,6 +43,9 @@ public class PostRepository implements IPostRepository{
         if (entity == null)
             return null;
 
+        if (postRepository == null)
+            postRepository = new ArrayList<>();
+
         postRepository.add(entity);
 
         return entity;
