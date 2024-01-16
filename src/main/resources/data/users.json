@@ -1,0 +1,42 @@
+[
+  {
+    "user_id": 234,
+    "user_name": "vendedor1",
+    "followers": [
+      {
+        "user_id": 4698,
+        "user_name": "usuario1"
+      },
+      {
+        "user_id": 1536,
+        "user_name": "usuario2"
+      },
+      {
+        "user_id": 2236,
+        "user_name": "usuario3"
+      }
+    ],
+    "followed": [],
+    "posts": []
+  },
+  {
+    "user_id": 456,
+    "user_name": "vendedor2",
+    "followers": [
+      {
+        "user_id": 4698,
+        "user_name": "usuario1"
+      },
+      {
+        "user_id": 1536,
+        "user_name": "usuario2"
+      },
+      {
+        "user_id": 2236,
+        "user_name": "usuario3"
+      }
+    ],
+    "followed": [],
+    "posts": []
+  }
+]

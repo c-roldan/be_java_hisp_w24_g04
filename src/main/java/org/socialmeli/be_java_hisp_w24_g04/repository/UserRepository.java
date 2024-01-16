@@ -1,23 +1,39 @@
 package org.socialmeli.be_java_hisp_w24_g04.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.socialmeli.be_java_hisp_w24_g04.model.Product;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class UserRepository implements IUserRepository{
-    private List<User> productRepository;
+    private List<User> userRepository;
+    private String jsonFile = "classpath:data/users.json";
 
-    public void setProductRepository() {
-        this.productRepository = loadProducts();
-    }
+    public UserRepository() { this.userRepository = loadProducts();}
 
     private ArrayList<User> loadProducts() {
-        return new ArrayList<>();
+        ArrayList<User> data = null;
+        File file;
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+        TypeReference<ArrayList<User>> typeRef = new TypeReference<>() {};
+        try {
+            file = ResourceUtils.getFile(this.jsonFile);
+            data = objectMapper.readValue(file, typeRef);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
     }
 
     @Override
@@ -25,14 +41,14 @@ public class UserRepository implements IUserRepository{
         if (entity == null)
             return null;
 
-        productRepository.add(entity);
+        userRepository.add(entity);
 
         return entity;
     }
 
     @Override
     public User remove(Integer id) {
-        var productToDelete = productRepository
+        var productToDelete = userRepository
                 .stream()
                 .filter(user -> user.getUserId().equals(id))
                 .findFirst()
@@ -41,14 +57,14 @@ public class UserRepository implements IUserRepository{
         if (productToDelete == null)
             return null;
 
-        productRepository.remove(productToDelete);
+        userRepository.remove(productToDelete);
 
         return productToDelete;
     }
 
     @Override
     public Optional<User> get(Integer id) {
-        return productRepository
+        return userRepository
                 .stream()
                 .filter(user -> user.getUserId().equals(id))
                 .findFirst();
@@ -56,19 +72,14 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public List<User> findAll() {
-        return productRepository;
+        return userRepository;
     }
 
     @Override
     public User update(User entity) {
-        productRepository = productRepository
+        userRepository = userRepository
                 .stream()
-                .map(user -> {
-                    if (user.getUserId().equals(entity.getUserId()))
-                        return entity;
-                    else
-                        return user;
-                }).toList();
+                .map(user -> user.getUserId().equals(entity.getUserId()) ? entity : user).toList();
 
         return entity;
     }
