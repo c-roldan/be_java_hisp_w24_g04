@@ -16,18 +16,21 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class UserRepository implements IUserRepository{
+public class UserRepository implements IUserRepository {
     private List<User> userRepository;
     private String jsonFile = "classpath:data/users.json";
 
-    public UserRepository() { this.userRepository = loadProducts();}
+    public UserRepository() {
+        this.userRepository = loadProducts();
+    }
 
     private ArrayList<User> loadProducts() {
         ArrayList<User> data = null;
         File file;
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
-        TypeReference<ArrayList<User>> typeRef = new TypeReference<>() {};
+        TypeReference<ArrayList<User>> typeRef = new TypeReference<>() {
+        };
         try {
             file = ResourceUtils.getFile(this.jsonFile);
             data = objectMapper.readValue(file, typeRef);
@@ -87,17 +90,8 @@ public class UserRepository implements IUserRepository{
 
     @Override
     public void follow(Integer userId, Integer userIdToFollow) {
-        var user = userRepository
-                .stream()
-                .filter(u -> u.getUserId().equals(userId))
-                .findFirst()
-                .orElse(null);
-
-        var userToFollow = userRepository
-                .stream()
-                .filter(u -> u.getUserId().equals(userIdToFollow))
-                .findFirst()
-                .orElse(null);
+        var user = this.get(userId).orElse(null);
+        var userToFollow = this.get(userIdToFollow).orElse(null);
 
         if (user == null)
             throw new NotFoundException("User with id " + userId + " not found");
@@ -107,5 +101,20 @@ public class UserRepository implements IUserRepository{
 
         user.getFollowed().add(new UserDTO(userToFollow.getUserId(), userToFollow.getUsername()));
         userToFollow.getFollowers().add(new UserDTO(user.getUserId(), user.getUsername()));
+    }
+
+    @Override
+    public void unfollow(Integer userId, Integer userIdToUnfollow) {
+        var user = this.get(userId).orElse(null);
+        var userToUnfollow = this.get(userIdToUnfollow).orElse(null);
+
+        if (user == null)
+            throw new NotFoundException("User with id " + userId + " not found");
+
+        if (userToUnfollow == null)
+            throw new NotFoundException("User with id " + userIdToUnfollow + " not found");
+
+        user.getFollowed().removeIf(u -> u.user_id().equals(userIdToUnfollow));
+        userToUnfollow.getFollowers().removeIf(u -> u.user_id().equals(userId));
     }
 }

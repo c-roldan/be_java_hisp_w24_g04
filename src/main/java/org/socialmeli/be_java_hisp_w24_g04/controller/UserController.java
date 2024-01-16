@@ -45,4 +45,16 @@ public class UserController {
             throw new BadRequestException("User id and user id to follow must be integers");
         }
     }
+
+    @PostMapping("/{userId}/unfollow/{userIdToUnfollow}")
+    public ResponseEntity<?> unfollow(@PathVariable String userId, @PathVariable String userIdToUnfollow) {
+        try {
+            Integer userIdInt = Integer.parseInt(userId);
+            Integer userIdToUnfollowInt = Integer.parseInt(userIdToUnfollow);
+            userService.unfollow(userIdInt, userIdToUnfollowInt);
+            return ResponseEntity.ok().build();
+        } catch (NumberFormatException e) {
+            throw new BadRequestException("User id and user id to unfollow must be integers");
+        }
+    }
 }

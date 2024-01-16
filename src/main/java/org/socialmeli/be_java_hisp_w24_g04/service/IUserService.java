@@ -9,4 +9,5 @@ public interface IUserService {
     User findById(int id);
     UserFollowedDTO getUserFollowedDTO(User user);
     void follow(Integer userId, Integer userIdToFollow);
+    void unfollow(Integer userId, Integer userIdToUnfollow);
 }
