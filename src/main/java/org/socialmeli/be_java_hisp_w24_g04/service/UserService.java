@@ -31,6 +31,11 @@ public class UserService implements IUserService {
 
     @Override
     public UserFollowedDTO getUserFollowedDTO(User user) {
-        return new UserFollowedDTO(user.getUserId(), user.getUsername(), (ArrayList<UserDTO>) user.getFollowed());
+        return new UserFollowedDTO(user.getUserId(), user.getUsername(), user.getFollowed());
+    }
+
+    @Override
+    public void follow(Integer userId, Integer userIdToFollow) {
+        userRepository.follow(userId, userIdToFollow);
     }
 }

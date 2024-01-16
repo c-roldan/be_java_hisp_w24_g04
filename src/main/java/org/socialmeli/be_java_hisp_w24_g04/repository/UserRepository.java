@@ -3,7 +3,8 @@ package org.socialmeli.be_java_hisp_w24_g04.repository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import org.socialmeli.be_java_hisp_w24_g04.model.Product;
+import org.socialmeli.be_java_hisp_w24_g04.dto.UserDTO;
+import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
@@ -82,5 +83,29 @@ public class UserRepository implements IUserRepository{
                 .map(user -> user.getUserId().equals(entity.getUserId()) ? entity : user).toList();
 
         return entity;
+    }
+
+    @Override
+    public void follow(Integer userId, Integer userIdToFollow) {
+        var user = userRepository
+                .stream()
+                .filter(u -> u.getUserId().equals(userId))
+                .findFirst()
+                .orElse(null);
+
+        var userToFollow = userRepository
+                .stream()
+                .filter(u -> u.getUserId().equals(userIdToFollow))
+                .findFirst()
+                .orElse(null);
+
+        if (user == null)
+            throw new NotFoundException("User with id " + userId + " not found");
+
+        if (userToFollow == null)
+            throw new NotFoundException("User with id " + userIdToFollow + " not found");
+
+        user.getFollowed().add(new UserDTO(userToFollow.getUserId(), userToFollow.getUsername()));
+        userToFollow.getFollowers().add(new UserDTO(user.getUserId(), user.getUsername()));
     }
 }

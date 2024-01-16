@@ -1,9 +1,9 @@
 package org.socialmeli.be_java_hisp_w24_g04.repository;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.socialmeli.be_java_hisp_w24_g04.model.Product;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
 
