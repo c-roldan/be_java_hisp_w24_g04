@@ -17,8 +17,8 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/users/{userId}/followed/list")
-    public ResponseEntity<?> userFollowedList(@PathVariable int userId){
+    //@GetMapping("/users/{userId}/followed/list")
+    //public ResponseEntity<?> userFollowedList(@PathVariable int userId){
 
-    }
+    //}
 }
