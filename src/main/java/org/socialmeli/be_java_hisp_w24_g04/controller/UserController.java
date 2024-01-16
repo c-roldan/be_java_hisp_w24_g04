@@ -7,16 +7,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final IUserService userRepository;
+    private final IUserService userService;
 
     @Autowired
-    public UserController(IUserService userRepository) {
-        this.userRepository = userRepository;
+    public UserController(IUserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/{userId}/followed/list")
+    public ResponseEntity<?> userFollowedList(@PathVariable int userId){
+        return null;
     }
 
     @PostMapping("/{userId}/follow/{userIdToFollow}")
@@ -24,7 +30,7 @@ public class UserController {
         try {
             Integer userIdInt = Integer.parseInt(userId);
             Integer userIdToFollowInt = Integer.parseInt(userIdToFollow);
-            userRepository.follow(userIdInt, userIdToFollowInt);
+            userService.follow(userIdInt, userIdToFollowInt);
             return ResponseEntity.ok().build();
         } catch (NumberFormatException e) {
             throw new BadRequestException("User id and user id to follow must be integers");

@@ -31,7 +31,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-### Data ####
-./src/main/resources/data
-!./src/main/resources/data/.gitkeep
