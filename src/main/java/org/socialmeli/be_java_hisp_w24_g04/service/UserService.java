@@ -13,4 +13,9 @@ public class UserService implements IUserService {
     public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    @Override
+    public void follow(Integer userId, Integer userIdToFollow) {
+        userRepository.follow(userId, userIdToFollow);
+    }
 }
