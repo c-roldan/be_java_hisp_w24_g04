@@ -1,21 +1,14 @@
 package org.socialmeli.be_java_hisp_w24_g04.service;
 
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowersDTO;
-import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
-import org.socialmeli.be_java_hisp_w24_g04.dto.UserDTO;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowedDTO;
-import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
-import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService {
@@ -58,5 +51,8 @@ public class UserService implements IUserService {
         userRepository.follow(userId, userIdToFollow);
     }
 
-
+    @Override
+    public void unfollow(Integer userId, Integer userIdToUnfollow) {
+        userRepository.unfollow(userId, userIdToUnfollow);
+    }
 }

@@ -7,7 +7,6 @@ import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
 
 import java.util.LinkedHashSet;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -16,6 +15,7 @@ public interface IUserService {
     User findById(int id);
     UserFollowedDTO getUserFollowedDTO(User user);
     void follow(Integer userId, Integer userIdToFollow);
+    void unfollow(Integer userId, Integer userIdToUnfollow);
 
     static Set<UserDTO> orderList(String orderParam, Set<UserDTO> lista) {
         if(orderParam.split("_").length != 2)

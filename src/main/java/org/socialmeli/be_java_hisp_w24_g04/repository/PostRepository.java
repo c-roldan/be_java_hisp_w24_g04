@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.socialmeli.be_java_hisp_w24_g04.model.Post;
-import org.socialmeli.be_java_hisp_w24_g04.model.Product;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ResourceUtils;
 
@@ -19,7 +18,7 @@ public class PostRepository implements IPostRepository{
     private List<Post> postRepository;
     private String jsonFile = "classpath:data/posts.json";
 
-    public void setProductRepository() {
+    public PostRepository(List<Post> postRepository) {
         this.postRepository = loadPosts();
     }
 
