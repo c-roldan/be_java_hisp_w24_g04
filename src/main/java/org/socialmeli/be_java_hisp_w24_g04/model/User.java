@@ -17,7 +17,6 @@ public class User {
     private Integer userId;
     @JsonProperty("user_name")
     private String username;
-
     private Set<UserDTO> followed;
     private Set<UserDTO> followers;
     private List<Post> posts;

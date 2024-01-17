@@ -2,6 +2,7 @@ package org.socialmeli.be_java_hisp_w24_g04.service;
 
 import org.socialmeli.be_java_hisp_w24_g04.dto.PostDTO;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserPostDTO;
+import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.exception.InvalidTimeException;
 import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
 import org.socialmeli.be_java_hisp_w24_g04.model.Post;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -44,7 +46,8 @@ public class PostService implements IPostService {
                 .orElse(null);
 
         if (idFound == null)
-            return null;
+            throw new BadRequestException("Couldn't create user's post. Please, try again with a valid" +
+                    " user ID.");
 
         var posts = postRepository.findAll();
         var postId = 0;
@@ -76,12 +79,16 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public List<PostDTO> searchAllFollowedLastTwoWeeks(Integer userId) {
-
+    public List<PostDTO> searchAllFollowedLastTwoWeeks(Integer userId, String order) {
         List<PostDTO> foundPosts = new ArrayList<>();
         LocalDate dateNow = LocalDate.now();
+        var user = userRepository.get(userId);
+
+        if (user.isEmpty())
+            throw new NotFoundException("User not found.");
+
         try{
-            userRepository.get(userId).get().getFollowed().forEach(followed -> {
+            user.get().getFollowed().forEach(followed -> {
                 postRepository.findAll().stream().filter(post -> post.getUserId().equals(followed.user_id()) && (ChronoUnit.DAYS.between(post.getDate(),dateNow) <= 14)).forEach(post -> {
                     PostDTO postDTO = new PostDTO(
                             post.getUserId(),
@@ -94,9 +101,19 @@ public class PostService implements IPostService {
                     foundPosts.add(postDTO);
                 });
             });
-            return foundPosts;
         } catch (Exception e) {
-            throw new NotFoundException("El usuario no existe");
+            throw new NotFoundException("User not found");
         }
+
+        if (order != null)
+            if(order.equals("date_asc")) {
+                foundPosts.sort(Comparator.comparing(PostDTO::date));
+            } else if (order.equals("date_desc")) {
+                foundPosts.sort(Comparator.comparing(PostDTO::date).reversed());
+            } else {
+                throw new BadRequestException("Order must be date_asc or date_desc");
+            }
+
+        return foundPosts;
     }
 }
