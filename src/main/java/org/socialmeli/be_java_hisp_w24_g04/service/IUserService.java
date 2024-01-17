@@ -17,7 +17,14 @@ public interface IUserService {
     void follow(Integer userId, Integer userIdToFollow);
     void unfollow(Integer userId, Integer userIdToUnfollow);
 
+    /**
+     *
+     * @param orderParam
+     * @param lista
+     * @return Set<UserDTO>
+     */
     static Set<UserDTO> orderList(String orderParam, Set<UserDTO> lista) {
+        /** Validating order param with the format field_asc or field_desc **/
         if(orderParam.split("_").length != 2)
             throw new BadRequestException("Parameter order with invalid format");
         String orderBy = orderParam.split("_")[0];
@@ -27,6 +34,7 @@ public interface IUserService {
         if (!order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
             throw new BadRequestException("Order must be asc or desc");
         }
+        /** End of order validation. Then proceed to return the new sorted list **/
         return lista.stream().sorted(
                 (u1, u2) -> {
                     int result = u1.user_name().compareTo(u2.user_name());
