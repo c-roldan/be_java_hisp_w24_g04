@@ -7,6 +7,7 @@ import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
 
 import java.util.LinkedHashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,9 @@ public interface IUserService {
         String order = orderParam.split("_")[1];
         if(! orderBy.equalsIgnoreCase("name"))
             throw new BadRequestException("Order by " + orderBy + " is not yet allowed");
+        if (!order.equalsIgnoreCase("asc") && !order.equalsIgnoreCase("desc")) {
+            throw new BadRequestException("Order must be asc or desc");
+        }
         return lista.stream().sorted(
                 (u1, u2) -> {
                     int result = u1.user_name().compareTo(u2.user_name());
