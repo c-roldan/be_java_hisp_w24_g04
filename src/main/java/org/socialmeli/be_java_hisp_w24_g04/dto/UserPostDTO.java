@@ -10,29 +10,5 @@ public record UserPostDTO(
         Product product,
         Integer category,
         Double price
-) implements IUserPost {
-    @Override
-    public Integer getUser_id() {
-        return this.user_id;
-    }
-
-    @Override
-    public String getDate() {
-        return this.date;
-    }
-
-    @Override
-    public Product getProduct() {
-        return this.product;
-    }
-
-    @Override
-    public Integer getCategory() {
-        return this.category;
-    }
-
-    @Override
-    public Double getPrice() {
-        return this.price;
-    }
+) {
 }

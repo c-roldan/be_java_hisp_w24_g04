@@ -25,15 +25,4 @@ public class Post {
     private Product product;
     private Integer category;
     private Double price;
-    private boolean has_promo = false;
-    private double discount = 0;
-
-    public Post(Integer postId, Integer userId, LocalDate date, Product product, Integer category, Double price) {
-        this.postId = postId;
-        this.userId = userId;
-        this.date = date;
-        this.product = product;
-        this.category = category;
-        this.price = price;
-    }
 }
