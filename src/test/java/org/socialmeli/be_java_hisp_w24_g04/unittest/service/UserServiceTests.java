@@ -40,15 +40,15 @@ public class UserServiceTests {
 
     @Test
     public void orderByNameHappyPathTest() {
-        Assertions.assertDoesNotThrow(() -> IUserService.orderList("name_asc", users));
-        Assertions.assertDoesNotThrow(() -> IUserService.orderList("name_desc", users));
+        Assertions.assertDoesNotThrow(() -> IUserService.orderList("name_asc", users), "Order by name asc should not throw an exception");
+        Assertions.assertDoesNotThrow(() -> IUserService.orderList("name_desc", users), "Order by name desc should not throw an exception");
     }
 
     @Test
-    public void orderByNameSadathTest() {
-        Assertions.assertThrows(BadRequestException.class, () -> IUserService.orderList("nameAsc", users));
-        Assertions.assertThrows(BadRequestException.class, () -> IUserService.orderList("id_asc", users));
-        Assertions.assertThrows(BadRequestException.class, () -> IUserService.orderList("name_a", users));
+    public void orderByNameSadPathTest() {
+        Assertions.assertThrows(BadRequestException.class, () -> IUserService.orderList("nameAsc", users), "Order by this param should throw an exception");
+        Assertions.assertThrows(BadRequestException.class, () -> IUserService.orderList("id_asc", users), "Order by this param should throw an exception");
+        Assertions.assertThrows(BadRequestException.class, () -> IUserService.orderList("name_a", users), "Order by this param should throw an exception");
     }
 
 }
