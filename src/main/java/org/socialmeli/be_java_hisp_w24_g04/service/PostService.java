@@ -1,11 +1,13 @@
 package org.socialmeli.be_java_hisp_w24_g04.service;
 
 import org.socialmeli.be_java_hisp_w24_g04.dto.PostDTO;
+import org.socialmeli.be_java_hisp_w24_g04.dto.ProductDTO;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserPostDTO;
 import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.exception.InvalidTimeException;
 import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
 import org.socialmeli.be_java_hisp_w24_g04.model.Post;
+import org.socialmeli.be_java_hisp_w24_g04.model.Product;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IPostRepository;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IProductRepository;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IUserRepository;
@@ -65,12 +67,21 @@ public class PostService implements IPostService {
             throw new InvalidTimeException("Invalid date format. It should be dd-MM-yyyy");
         }
 
-        productRepository.save(userPost.product());
+        var productToSave = new Product(
+                userPost.product().product_id(),
+                userPost.product().product_name(),
+                userPost.product().type(),
+                userPost.product().brand(),
+                userPost.product().color(),
+                userPost.product().notes()
+        );
+
+        productRepository.save(productToSave);
         postRepository.save(new Post(
                 postId,
                 userPost.user_id(),
                 dt,
-                userPost.product(),
+                productToSave,
                 userPost.category(),
                 userPost.price()
         ));
@@ -94,7 +105,14 @@ public class PostService implements IPostService {
                             post.getUserId(),
                             post.getPostId(),
                             post.getDate().toString(),
-                            post.getProduct(),
+                            new ProductDTO(
+                                    post.getProduct().getProductId(),
+                                    post.getProduct().getName(),
+                                    post.getProduct().getType(),
+                                    post.getProduct().getBrand(),
+                                    post.getProduct().getColor(),
+                                    post.getProduct().getNotes()
+                            ),
                             post.getCategory(),
                             post.getPrice()
                     );
