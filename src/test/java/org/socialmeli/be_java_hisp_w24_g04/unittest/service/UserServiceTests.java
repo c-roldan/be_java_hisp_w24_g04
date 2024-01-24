@@ -2,6 +2,7 @@ package org.socialmeli.be_java_hisp_w24_g04.unittest.service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,13 +40,20 @@ public class UserServiceTests {
     }
 
     @Test
-    public void orderByNameHappyPathTest() {
+    @DisplayName("Order by name asc test")
+    public void orderByNameAscTest() {
         Assertions.assertDoesNotThrow(() -> IUserService.orderList("name_asc", users), "Order by name asc should not throw an exception");
+    }
+
+    @Test
+    @DisplayName("Order by name desc test")
+    public void orderByNameDescTest() {
         Assertions.assertDoesNotThrow(() -> IUserService.orderList("name_desc", users), "Order by name desc should not throw an exception");
     }
 
     @Test
-    public void orderByNameSadPathTest() {
+    @DisplayName("Order by name invalid param test")
+    public void orderByNameInvalidParamTest() {
         Assertions.assertThrows(BadRequestException.class, () -> IUserService.orderList("nameAsc", users), "Order by this param should throw an exception");
         Assertions.assertThrows(BadRequestException.class, () -> IUserService.orderList("id_asc", users), "Order by this param should throw an exception");
         Assertions.assertThrows(BadRequestException.class, () -> IUserService.orderList("name_a", users), "Order by this param should throw an exception");
