@@ -3,8 +3,6 @@ package org.socialmeli.be_java_hisp_w24_g04.unittest.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,7 +12,7 @@ import org.socialmeli.be_java_hisp_w24_g04.dto.UserDTO;
 import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowedDTO;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowersDTO;
-import org.socialmeli.be_java_hisp_w24_g04.dto.UserDTO;
+import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.socialmeli.be_java_hisp_w24_g04.repository.UserRepository;
 import org.socialmeli.be_java_hisp_w24_g04.service.IUserService;
@@ -25,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import java.util.Optional;
-import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
@@ -104,7 +101,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void getFollowersCountTest() {
+    public void testGetFollowersCount() {
         // arrange
         Set<UserDTO> followers = Set.of(
                 new UserDTO(2, "user2"),
@@ -119,9 +116,19 @@ public class UserServiceTests {
         Mockito.when(userRepository.get(user.getUserId())).thenReturn(Optional.of(user));
 
         // act
-        Integer followersCount = userService.findById(user.getUserId()).getFollowers().size();
+        Integer followersCount = userService.getFollowersCount(user.getUserId());
 
         // assert
         Assertions.assertEquals(3, followersCount);
+    }
+
+    @Test
+    public void testGetFollowersCountInvalidUser() {
+        // arrange
+        Integer userId = 1;
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.empty());
+
+        // act & assert
+        Assertions.assertThrows(NotFoundException.class, () -> userService.getFollowersCount(userId));
     }
 }
