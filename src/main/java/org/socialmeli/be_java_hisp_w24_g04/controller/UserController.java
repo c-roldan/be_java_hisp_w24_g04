@@ -1,17 +1,21 @@
 package org.socialmeli.be_java_hisp_w24_g04.controller;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.socialmeli.be_java_hisp_w24_g04.dto.*;
 import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.socialmeli.be_java_hisp_w24_g04.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
+@Validated
 public class UserController {
     private final IUserService userService;
 
@@ -21,7 +25,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followers/list")
-    public ResponseEntity<SingleResponseDTO> getFollowers(@PathVariable Integer userId, @RequestParam(required = false) String order) {
+    public ResponseEntity<SingleResponseDTO> getFollowers(
+            @PathVariable
+            @NotNull(message = "Parámetro user_id faltante (tipo Integer).")
+            @PositiveOrZero(message = "El user_id debe ser mayor a cero.")
+            Integer userId,
+
+            @RequestParam(required = false) String order) {
         User user = userService.findById(userId);
         Set<UserDTO> followers = userService.getFollowers(userId);
         UserFollowersDTO dto = new UserFollowersDTO(user.getUserId(), user.getUsername(), followers);
@@ -29,7 +39,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followed/list")
-    public ResponseEntity<SingleResponseDTO> userFollowedList(@PathVariable int userId, @RequestParam(required = false) String order) {
+    public ResponseEntity<SingleResponseDTO> userFollowedList(
+            @PathVariable
+            @NotNull(message = "Parámetro user_id faltante (tipo Integer).")
+            @PositiveOrZero(message = "El user_id debe ser mayor a cero.")
+            Integer userId,
+
+            @RequestParam(required = false) String order) {
         User user = userService.findById(userId);
         Set<UserDTO> followed = userService.getFollowed(userId);
         UserFollowedDTO dto = new UserFollowedDTO(user.getUserId(), user.getUsername(), followed);
@@ -37,7 +53,12 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followers/count")
-    public ResponseEntity<SingleResponseDTO> getFollowersCount(@PathVariable Integer userId) {
+    public ResponseEntity<SingleResponseDTO> getFollowersCount(
+            @PathVariable
+            @NotNull(message = "Parámetro user_id faltante (tipo Integer).")
+            @PositiveOrZero(message = "El user_id debe ser mayor a cero.")
+            Integer userId
+    ) {
         User user = userService.findById(userId);
         Integer followersCount = userService.getFollowersCount(userId);
         UserFollowerCountDTO response = new UserFollowerCountDTO(user.getUserId(), user.getUsername(), followersCount);
@@ -45,7 +66,17 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/follow/{userIdToFollow}")
-    public ResponseEntity<?> follow(@PathVariable String userId, @PathVariable String userIdToFollow) {
+    public ResponseEntity<?> follow(
+            @PathVariable
+            @NotNull(message = "Parámetro user_id faltante (tipo Integer).")
+            @PositiveOrZero(message = "El user_id debe ser mayor a cero.")
+            String userId,
+
+            @PathVariable
+            @NotNull(message = "Parámetro userIdToFollow faltante (tipo Integer).")
+            @PositiveOrZero(message = "El userIdToFollow debe ser mayor a cero.")
+            String userIdToFollow
+    ) {
         try {
             Integer userIdInt = Integer.parseInt(userId);
             Integer userIdToFollowInt = Integer.parseInt(userIdToFollow);
@@ -57,7 +88,17 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/unfollow/{userIdToUnfollow}")
-    public ResponseEntity<?> unfollow(@PathVariable String userId, @PathVariable String userIdToUnfollow) {
+    public ResponseEntity<?> unfollow(
+            @PathVariable
+            @NotNull(message = "Parámetro user_id faltante (tipo Integer).")
+            @PositiveOrZero(message = "El user_id debe ser mayor a cero.")
+            String userId,
+
+            @PathVariable
+            @NotNull(message = "Parámetro userIdToUnfollow faltante (tipo Integer).")
+            @PositiveOrZero(message = "El userIdToUnfollow debe ser mayor a cero.")
+            String userIdToUnfollow
+    ) {
         try {
             Integer userIdInt = Integer.parseInt(userId);
             Integer userIdToUnfollowInt = Integer.parseInt(userIdToUnfollow);
