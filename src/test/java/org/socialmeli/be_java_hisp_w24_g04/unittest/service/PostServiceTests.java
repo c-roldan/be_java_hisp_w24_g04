@@ -2,6 +2,7 @@ package org.socialmeli.be_java_hisp_w24_g04.unittest.service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -47,39 +48,43 @@ public class PostServiceTests {
     }
 
     @Test
+    @DisplayName("Test order by date asc")
     public void orderByDateAscTest() {
 
         String ascParam = "date_asc";
 
         Mockito.when(userRepository.get(101)).thenReturn(Optional.of(userWithId101));
 
-        Assertions.assertDoesNotThrow(() -> postService.searchAllFollowedLastTwoWeeks(101, ascParam));
+        Assertions.assertDoesNotThrow(() -> postService.searchAllFollowedLastTwoWeeks(101, ascParam), "Param date_asc should not throw exception");
 
     }
 
     @Test
+    @DisplayName("Test order by date desc")
     public void orderByDateDescTest() {
 
         String descParam = "date_desc";
 
         Mockito.when(userRepository.get(101)).thenReturn(Optional.of(userWithId101));
 
-        Assertions.assertDoesNotThrow(() -> postService.searchAllFollowedLastTwoWeeks(101, descParam));
+        Assertions.assertDoesNotThrow(() -> postService.searchAllFollowedLastTwoWeeks(101, descParam), "Param date_desc should not throw exception");
 
     }
 
     @Test
+    @DisplayName("Test order by date empty param")
     public void orderByDateEmptyParamTest() {
 
         String emptyParam = null;
 
         Mockito.when(userRepository.get(101)).thenReturn(Optional.of(userWithId101));
 
-        Assertions.assertDoesNotThrow(() -> postService.searchAllFollowedLastTwoWeeks(101, emptyParam));
+        Assertions.assertDoesNotThrow(() -> postService.searchAllFollowedLastTwoWeeks(101, emptyParam), "Empty param should not throw exception");
 
     }
 
     @Test
+    @DisplayName("Test order by date with unknown param")
     public void orderByDateWithUnknownParamTest() {
 
         String unknownParam = "any_param";
@@ -88,7 +93,7 @@ public class PostServiceTests {
 
         Assertions.assertThrows(
                 BadRequestException.class,
-                () -> postService.searchAllFollowedLastTwoWeeks(101, unknownParam));
+                () -> postService.searchAllFollowedLastTwoWeeks(101, unknownParam), "Unknown param should throw exception");
 
     }
 
