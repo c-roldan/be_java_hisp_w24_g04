@@ -6,6 +6,7 @@ import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.exception.InvalidTimeException;
 import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
 import org.socialmeli.be_java_hisp_w24_g04.model.Post;
+import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IPostRepository;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IProductRepository;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IUserRepository;
@@ -38,16 +39,9 @@ public class PostService implements IPostService {
 
     @Override
     public UserPostDTO createUserPost(UserPostDTO userPost) {
-        var idFound = userRepository
-                .findAll()
-                .stream()
-                .filter(user -> user.getUserId().equals(userPost.user_id()))
-                .findFirst()
-                .orElse(null);
-
-        if (idFound == null)
-            throw new BadRequestException("Couldn't create user's post. Please, try again with a valid" +
-                    " user ID.");
+        userRepository.get(userPost.user_id()).orElseThrow(
+                () -> new BadRequestException("Couldn't create user's post. Please, try again with a valid user ID.")
+        );
 
         var posts = postRepository.findAll();
         var postId = 0;
@@ -82,14 +76,11 @@ public class PostService implements IPostService {
     public List<PostDTO> searchAllFollowedLastTwoWeeks(Integer userId, String order) {
         List<PostDTO> foundPosts = new ArrayList<>();
         LocalDate dateNow = LocalDate.now();
-        var user = userRepository.get(userId);
+        User user = userRepository.get(userId).orElseThrow(() -> new NotFoundException("User not found."));
 
-        if (user.isEmpty())
-            throw new NotFoundException("User not found.");
-
-        try{
-            user.get().getFollowed().forEach(followed -> {
-                postRepository.findAll().stream().filter(post -> post.getUserId().equals(followed.user_id()) && (ChronoUnit.DAYS.between(post.getDate(),dateNow) <= 14)).forEach(post -> {
+        try {
+            user.getFollowed().forEach(followed -> {
+                postRepository.findAll().stream().filter(post -> post.getUserId().equals(followed.user_id()) && (ChronoUnit.DAYS.between(post.getDate(), dateNow) <= 14)).forEach(post -> {
                     PostDTO postDTO = new PostDTO(
                             post.getUserId(),
                             post.getPostId(),
@@ -106,7 +97,7 @@ public class PostService implements IPostService {
         }
 
         if (order != null)
-            if(order.equals("date_asc")) {
+            if (order.equals("date_asc")) {
                 foundPosts.sort(Comparator.comparing(PostDTO::date));
             } else if (order.equals("date_desc")) {
                 foundPosts.sort(Comparator.comparing(PostDTO::date).reversed());

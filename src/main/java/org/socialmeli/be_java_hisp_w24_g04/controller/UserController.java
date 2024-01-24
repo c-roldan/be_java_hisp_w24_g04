@@ -1,15 +1,14 @@
 package org.socialmeli.be_java_hisp_w24_g04.controller;
 
-import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowedDTO;
-import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowerCountDTO;
-import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowersDTO;
+import org.socialmeli.be_java_hisp_w24_g04.dto.*;
 import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
-import org.socialmeli.be_java_hisp_w24_g04.dto.SingleResponseDTO;
 import org.socialmeli.be_java_hisp_w24_g04.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -23,20 +22,25 @@ public class UserController {
 
     @GetMapping("/{userId}/followers/list")
     public ResponseEntity<SingleResponseDTO> getFollowers(@PathVariable Integer userId, @RequestParam(required = false) String order) {
-        UserFollowersDTO dto = userService.getFollowers(userId);
-        return ResponseEntity.ok(new SingleResponseDTO(200, (order == null) ? dto : dto.order(order)));
+        User user = userService.findById(userId);
+        Set<UserDTO> followers = userService.getFollowers(userId);
+        UserFollowersDTO dto = new UserFollowersDTO(user.getUserId(), user.getUsername(), followers);
+        return ResponseEntity.ok(new SingleResponseDTO(200, (order == null) ? dto : dto.orderBy(order)));
     }
 
     @GetMapping("/{userId}/followed/list")
     public ResponseEntity<SingleResponseDTO> userFollowedList(@PathVariable int userId, @RequestParam(required = false) String order) {
-        UserFollowedDTO user = userService.getUserFollowedDTO(userService.findById(userId));
-        return ResponseEntity.ok(new SingleResponseDTO(200, (order == null) ? user : user.orderBy(order)));
+        User user = userService.findById(userId);
+        Set<UserDTO> followed = userService.getFollowed(userId);
+        UserFollowedDTO dto = new UserFollowedDTO(user.getUserId(), user.getUsername(), followed);
+        return ResponseEntity.ok(new SingleResponseDTO(200, (order == null) ? user : dto.orderBy(order)));
     }
 
     @GetMapping("/{userId}/followers/count")
     public ResponseEntity<SingleResponseDTO> getFollowersCount(@PathVariable Integer userId) {
         User user = userService.findById(userId);
-        UserFollowerCountDTO response = new UserFollowerCountDTO(user.getUserId(), user.getUsername(), user.getFollowers().size());
+        Integer followersCount = userService.getFollowersCount(userId);
+        UserFollowerCountDTO response = new UserFollowerCountDTO(user.getUserId(), user.getUsername(), followersCount);
         return ResponseEntity.ok(new SingleResponseDTO(200, response));
     }
 
