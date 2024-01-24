@@ -33,7 +33,7 @@ public class UserRepositoryTests {
 
         // Act
         userRepository.unfollow(1, 2);
-        
+
         // Assert
         Assertions.assertFalse(user1.getFollowed().contains(user2));
         Assertions.assertFalse(user2.getFollowers().contains(user1));
@@ -42,9 +42,7 @@ public class UserRepositoryTests {
     @Test
     public void unfollowInvalidUserId(){
         // Arrange
-        Set<UserDTO> followed = new HashSet<>();
-        Set<UserDTO> followers = new HashSet<>();
-        User user = new User(1, "user1", followed, followers, null);
+        User user = createUser(1, "user1");
         userRepository.save(user);
 
         // Act & Assert
