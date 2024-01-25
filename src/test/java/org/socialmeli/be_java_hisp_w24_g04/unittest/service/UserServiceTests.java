@@ -6,17 +6,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserDTO;
 import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowedDTO;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowersDTO;
+import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
+import org.socialmeli.be_java_hisp_w24_g04.model.Post;
+import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.socialmeli.be_java_hisp_w24_g04.repository.UserRepository;
 import org.socialmeli.be_java_hisp_w24_g04.service.IUserService;
 import org.socialmeli.be_java_hisp_w24_g04.service.UserService;
-import java.util.Set;
 
-import java.util.List;
+import java.util.*;
+
 import java.util.stream.Collectors;
 
 @ExtendWith(MockitoExtension.class)
@@ -93,5 +97,53 @@ public class UserServiceTests {
 
         Assertions.assertEquals(expectedAsc, dto.orderBy("name_asc"));
         Assertions.assertEquals(expectedDesc, dto.orderBy("name_desc"));
+    }
+
+    @Test
+    @DisplayName("User Service: Verify if an existing user returns ok.")
+    void testIfUserExists() {
+        // Arrange
+        Integer idParam = 1;
+        User expectedUser = new User(
+                idParam,
+                "user1",
+                new HashSet<>(){
+                    {
+                        add(userDTO1);
+                        add(userDTO2);
+                    }
+                },
+                new HashSet<>(){
+                    {
+                        add(userDTO3);
+                    }
+                }
+        );
+
+        // Act
+        Mockito
+                .when(userRepository.get(idParam))
+                .thenReturn(Optional.of(expectedUser));
+
+        var result = userService.findById(idParam);
+
+        // Assert
+        Assertions.assertEquals(expectedUser.getUsername(), result.getUsername());
+        Assertions.assertEquals(expectedUser.getFollowers().size(), result.getFollowers().size());
+    }
+
+    @Test
+    @DisplayName("User Service: Verify if an non-existing user throws error.")
+    void testIfUserNotExists() {
+        // Arrange
+        int idParam = 2;
+
+        // Act
+        Mockito
+                .when(userRepository.get(idParam))
+                .thenReturn(Optional.empty());
+
+        // Assert
+        Assertions.assertThrows(NotFoundException.class, () -> userService.findById(idParam));
     }
 }
