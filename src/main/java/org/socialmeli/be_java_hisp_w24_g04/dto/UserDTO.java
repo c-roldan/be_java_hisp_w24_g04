@@ -1,6 +1,7 @@
 package org.socialmeli.be_java_hisp_w24_g04.dto;
 
 import jakarta.validation.constraints.*;
+import org.socialmeli.be_java_hisp_w24_g04.model.User;
 
 public record UserDTO(
         @NotNull(message = "Parámetro user_id faltante (tipo Integer).")
@@ -14,4 +15,7 @@ public record UserDTO(
         @Pattern(regexp = "^[a-zA-Z0-9 ]*$", message = "El campo user_name no puede poseer caracteres especiales.")
         String user_name
 ) {
+    public UserDTO(User user) {
+        this(user.getUserId(), user.getUsername());
+    }
 }
