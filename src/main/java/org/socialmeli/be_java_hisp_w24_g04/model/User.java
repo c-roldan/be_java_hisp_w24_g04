@@ -19,5 +19,4 @@ public class User {
     private String username;
     private Set<UserDTO> followed;
     private Set<UserDTO> followers;
-    private List<Post> posts;
 }

@@ -39,12 +39,8 @@ public class PostServiceTests {
 
     @BeforeEach
     public void setUp() {
-        Product product1 = new Product(1, "Product1", "Type1", "Brand1", "Color1", "Notes1");
-        Post post1 = new Post(1, 101, LocalDate.of(2024, 1, 10), product1, 1, 29.99);
-        Product product2 = new Product(2, "Product2", "Type2", "Brand2", "Color2", "Notes2");
-        Post post2 = new Post(2, 101, LocalDate.of(2024, 1, 10), product2, 2, 39.99);
         UserDTO followedUserDTO = new UserDTO(102, "User2");
-        userWithId101 = new User(101, "User1", Set.of(followedUserDTO), Set.of(), Arrays.asList(post1, post2));
+        userWithId101 = new User(101, "User1", Set.of(followedUserDTO), Set.of());
     }
 
     @Test
