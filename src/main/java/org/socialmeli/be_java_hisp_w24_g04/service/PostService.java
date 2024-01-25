@@ -91,7 +91,9 @@ public class PostService implements IPostService {
 
         try {
             user.getFollowed().forEach(followed -> {
-                postRepository.findAll().stream().filter(post -> post.getUserId().equals(followed.user_id()) && (ChronoUnit.DAYS.between(post.getDate(), dateNow) <= 14)).forEach(post -> {
+                postRepository.findAll().stream().filter(
+                        post -> post.getUserId().equals(followed.user_id()) &&
+                                (ChronoUnit.DAYS.between(post.getDate(), dateNow) <= 14)).forEach(post -> {
                     PostDTO postDTO = new PostDTO(
                             post.getUserId(),
                             post.getPostId(),
