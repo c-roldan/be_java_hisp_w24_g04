@@ -131,4 +131,74 @@ public class UserServiceTests {
         // act & assert
         Assertions.assertThrows(NotFoundException.class, () -> userService.getFollowersCount(userId));
     }
+
+    @Test
+    public void testFollow() {
+        // arrange
+        Integer userId = 1;
+        Integer userIdToFollow = 2;
+
+        User user = new User();
+        user.setUserId(userId);
+
+        User userToFollow = new User();
+        userToFollow.setUserId(userIdToFollow);
+
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.get(userIdToFollow)).thenReturn(Optional.of(userToFollow));
+        Mockito.when(userRepository.addFollower(user, userToFollow)).thenReturn(true);
+
+        // act
+        boolean followed = userService.follow(userId, userIdToFollow);
+
+        // assert
+        Assertions.assertTrue(followed);
+    }
+
+    @Test
+    public void testFollowInvalidUser() {
+        // arrange
+        Integer userId = 1;
+        Integer userIdToFollow = 2;
+
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.empty());
+
+        // act & assert
+        Assertions.assertThrows(NotFoundException.class, () -> userService.follow(userId, userIdToFollow));
+    }
+
+    @Test
+    public void testUnfollow() {
+        // arrange
+        Integer userId = 1;
+        Integer userIdToUnfollow = 2;
+
+        User user = new User();
+        user.setUserId(userId);
+
+        User userToUnfollow = new User();
+        userToUnfollow.setUserId(userIdToUnfollow);
+
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.get(userIdToUnfollow)).thenReturn(Optional.of(userToUnfollow));
+        Mockito.when(userRepository.removeFollower(user, userToUnfollow)).thenReturn(true);
+
+        // act
+        boolean unfollowed = userService.unfollow(userId, userIdToUnfollow);
+
+        // assert
+        Assertions.assertTrue(unfollowed);
+    }
+
+    @Test
+    public void testUnfollowInvalidUser() {
+        // arrange
+        Integer userId = 1;
+        Integer userIdToUnfollow = 2;
+
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.empty());
+
+        // act & assert
+        Assertions.assertThrows(NotFoundException.class, () -> userService.unfollow(userId, userIdToUnfollow));
+    }
 }
