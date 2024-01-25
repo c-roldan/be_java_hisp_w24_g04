@@ -95,8 +95,8 @@ public class UserServiceTests {
         UserFollowersDTO expectedAsc = new UserFollowersDTO(4, "user 4", ascList);
         UserFollowersDTO expectedDesc = new UserFollowersDTO(4, "user 4", descList);
 
-        Assertions.assertEquals(expectedAsc, dto.order("name_asc"));
-        Assertions.assertEquals(expectedDesc, dto.order("name_desc"));
+        Assertions.assertEquals(expectedAsc, dto.orderBy("name_asc"));
+        Assertions.assertEquals(expectedDesc, dto.orderBy("name_desc"));
     }
 
     @Test
