@@ -1,14 +1,14 @@
 package org.socialmeli.be_java_hisp_w24_g04.service;
 
-import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowersDTO;
+import org.socialmeli.be_java_hisp_w24_g04.dto.UserDTO;
 import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
-import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowedDTO;
 import org.socialmeli.be_java_hisp_w24_g04.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService implements IUserService {
@@ -20,39 +20,43 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserFollowersDTO getFollowers(Integer userId) {
-
-        Optional<User> foundUser= userRepository.get(userId);
-
-        if(foundUser.isEmpty()) throw new NotFoundException("No se encontró el usuario con id " + userId);
-
-        return new UserFollowersDTO(
-                foundUser.get().getUserId(),
-                foundUser.get().getUsername(),
-                foundUser.get().getFollowers());
-    }
-
-
-    @Override
     public User findById(int id) {
         Optional<User> user = userRepository.get(id);
-        if(user.isEmpty())
-            throw new NotFoundException("El usuario no existe");
+        if (user.isEmpty())
+            throw new NotFoundException("User with id " + id + " not found");
         return user.get();
     }
 
     @Override
-    public UserFollowedDTO getUserFollowedDTO(User user) {
-        return new UserFollowedDTO(user.getUserId(), user.getUsername(), user.getFollowed());
+    public Integer getFollowersCount(Integer userId) {
+        return this.getFollowers(userId).size();
     }
 
     @Override
-    public void follow(Integer userId, Integer userIdToFollow) {
-        userRepository.follow(userId, userIdToFollow);
+    public Set<UserDTO> getFollowers(Integer userId) {
+        User user = this.findById(userId);
+        return user.getFollowers();
     }
 
     @Override
-    public void unfollow(Integer userId, Integer userIdToUnfollow) {
-        userRepository.unfollow(userId, userIdToUnfollow);
+    public Set<UserDTO> getFollowed(Integer userId) {
+        User user = this.findById(userId);
+        return user.getFollowed();
+    }
+
+    @Override
+    public boolean follow(Integer userId, Integer userIdToFollow) {
+        User user = this.findById(userId);
+        User userToFollow = this.findById(userIdToFollow);
+
+        return userRepository.addFollower(user, userToFollow);
+    }
+
+    @Override
+    public boolean unfollow(Integer userId, Integer userIdToUnfollow) {
+        User user = this.findById(userId);
+        User userToUnfollow = this.findById(userIdToUnfollow);
+
+        return userRepository.removeFollower(user, userToUnfollow);
     }
 }
