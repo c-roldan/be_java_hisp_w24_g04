@@ -15,7 +15,7 @@ public class UserRepositoryTests {
     IUserRepository userRepository = new UserRepository();
 
     private User createUser(int id, String username) {
-        return new User(id, username, new HashSet<>(), new HashSet<>(), null);
+        return new User(id, username, new HashSet<>(), new HashSet<>());
     }
 
     @Test

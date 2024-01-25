@@ -13,15 +13,17 @@ import org.socialmeli.be_java_hisp_w24_g04.exception.BadRequestException;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowedDTO;
 import org.socialmeli.be_java_hisp_w24_g04.dto.UserFollowersDTO;
 import org.socialmeli.be_java_hisp_w24_g04.exception.NotFoundException;
-import org.socialmeli.be_java_hisp_w24_g04.model.Post;
 import org.socialmeli.be_java_hisp_w24_g04.model.User;
 import org.socialmeli.be_java_hisp_w24_g04.repository.UserRepository;
 import org.socialmeli.be_java_hisp_w24_g04.service.IUserService;
 import org.socialmeli.be_java_hisp_w24_g04.service.UserService;
+import java.util.Set;
 
 import java.util.*;
 
 import java.util.stream.Collectors;
+
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
@@ -145,5 +147,107 @@ public class UserServiceTests {
 
         // Assert
         Assertions.assertThrows(NotFoundException.class, () -> userService.findById(idParam));
+    }
+
+    @Test
+    public void testGetFollowersCount() {
+        // arrange
+        Set<UserDTO> followers = Set.of(
+                new UserDTO(2, "user2"),
+                new UserDTO(3, "user3"),
+                new UserDTO(4, "user4")
+        );
+
+        User user = new User();
+        user.setUserId(1);
+        user.setFollowers(followers);
+
+        Mockito.when(userRepository.get(user.getUserId())).thenReturn(Optional.of(user));
+
+        // act
+        Integer followersCount = userService.getFollowersCount(user.getUserId());
+
+        // assert
+        Assertions.assertEquals(3, followersCount);
+    }
+
+    @Test
+    public void testGetFollowersCountInvalidUser() {
+        // arrange
+        Integer userId = 1;
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.empty());
+
+        // act & assert
+        Assertions.assertThrows(NotFoundException.class, () -> userService.getFollowersCount(userId));
+    }
+
+    @Test
+    public void testFollow() {
+        // arrange
+        Integer userId = 1;
+        Integer userIdToFollow = 2;
+
+        User user = new User();
+        user.setUserId(userId);
+
+        User userToFollow = new User();
+        userToFollow.setUserId(userIdToFollow);
+
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.get(userIdToFollow)).thenReturn(Optional.of(userToFollow));
+        Mockito.when(userRepository.addFollower(user, userToFollow)).thenReturn(true);
+
+        // act
+        boolean followed = userService.follow(userId, userIdToFollow);
+
+        // assert
+        Assertions.assertTrue(followed);
+    }
+
+    @Test
+    public void testFollowInvalidUser() {
+        // arrange
+        Integer userId = 1;
+        Integer userIdToFollow = 2;
+
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.empty());
+
+        // act & assert
+        Assertions.assertThrows(NotFoundException.class, () -> userService.follow(userId, userIdToFollow));
+    }
+
+    @Test
+    public void testUnfollow() {
+        // arrange
+        Integer userId = 1;
+        Integer userIdToUnfollow = 2;
+
+        User user = new User();
+        user.setUserId(userId);
+
+        User userToUnfollow = new User();
+        userToUnfollow.setUserId(userIdToUnfollow);
+
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.of(user));
+        Mockito.when(userRepository.get(userIdToUnfollow)).thenReturn(Optional.of(userToUnfollow));
+        Mockito.when(userRepository.removeFollower(user, userToUnfollow)).thenReturn(true);
+
+        // act
+        boolean unfollowed = userService.unfollow(userId, userIdToUnfollow);
+
+        // assert
+        Assertions.assertTrue(unfollowed);
+    }
+
+    @Test
+    public void testUnfollowInvalidUser() {
+        // arrange
+        Integer userId = 1;
+        Integer userIdToUnfollow = 2;
+
+        Mockito.when(userRepository.get(userId)).thenReturn(Optional.empty());
+
+        // act & assert
+        Assertions.assertThrows(NotFoundException.class, () -> userService.unfollow(userId, userIdToUnfollow));
     }
 }

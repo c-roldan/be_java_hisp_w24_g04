@@ -21,10 +21,10 @@ public class UserRepository implements IUserRepository {
     private String jsonFile = "classpath:data/users.json";
 
     public UserRepository() {
-        this.userRepository = loadProducts();
+        this.userRepository = loadUsers();
     }
 
-    private ArrayList<User> loadProducts() {
+    private ArrayList<User> loadUsers() {
         ArrayList<User> data = null;
         File file;
         ObjectMapper objectMapper = new ObjectMapper();
