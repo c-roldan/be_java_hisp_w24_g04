@@ -117,8 +117,7 @@ public class UserServiceTests {
                     {
                         add(userDTO3);
                     }
-                },
-                new ArrayList<>()
+                }
         );
 
         // Act
