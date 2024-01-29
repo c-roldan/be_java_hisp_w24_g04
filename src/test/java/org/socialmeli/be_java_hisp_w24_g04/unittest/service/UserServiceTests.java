@@ -60,6 +60,7 @@ public class UserServiceTests {
     }
 
     @Test
+    @DisplayName("Sorting list in ascending and descending order")
     public void testRightOrderLists() {
         Set<UserDTO> ascList = List.of(userDTO1,userDTO2,userDTO3).stream().collect(Collectors.toSet());
         Set<UserDTO> descList = List.of(userDTO3,userDTO2,userDTO1).stream().collect(Collectors.toSet());
@@ -69,6 +70,7 @@ public class UserServiceTests {
     }
 
     @Test
+    @DisplayName("Testing exception when ordering lists")
     public void testWrongOrderLists() throws BadRequestException {
         Set<UserDTO> list = List.of(new UserDTO(1,"user1")).stream().collect(Collectors.toSet());
 
@@ -78,6 +80,7 @@ public class UserServiceTests {
     }
 
     @Test
+    @DisplayName("Testing user followed sorting by name ascending and descending")
     public void testUserFollowedDTO() {
         Set<UserDTO> ascList = List.of(userDTO1,userDTO2,userDTO3).stream().collect(Collectors.toSet());
         Set<UserDTO> descList = List.of(userDTO3,userDTO2,userDTO1).stream().collect(Collectors.toSet());
@@ -90,6 +93,7 @@ public class UserServiceTests {
     }
 
     @Test
+    @DisplayName("Testing user followers sorting by name ascending and descending")
     public void testUserFollowersDTO() {
         Set<UserDTO> ascList = List.of(userDTO1,userDTO2,userDTO3).stream().collect(Collectors.toSet());
         Set<UserDTO> descList = List.of(userDTO3,userDTO2,userDTO1).stream().collect(Collectors.toSet());
@@ -205,6 +209,7 @@ public class UserServiceTests {
     }
 
     @Test
+    @DisplayName("Following an invalid user")
     public void testFollowInvalidUser() {
         // arrange
         Integer userId = 1;
