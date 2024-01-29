@@ -36,7 +36,7 @@ Luego importar el archivo utilizando Postman para visualizar y realizar pruebas 
 
 # Testing
 
-| **User Story** | **Endpoint**                                              | **Responsable**                   |
+| **User Story** | **Descripción**                                              | **Responsable**                   |
 |------------|-------------------------------------------------------|--------------------------------|
 | T-0001     | Verificar que el usuario a seguir exista. (US-0001)        | Comilo Roldan Quijano                 |
 | T-0002     | Verificar que el usuario a dejar de seguir exista. (US-0007)                 | Victoria Iglesias Márquez      |
